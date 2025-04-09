@@ -1,15 +1,10 @@
 import google.generativeai as genai
 
-# Configure your Gemini API with the key
 genai.configure(api_key="AIzaSyBWOH8VTt5dgEs6WD124soShBAnRQh9vkk")
 
-
-# Sum function to help check for wins
 def sum(a, b, c):
     return a + b + c
 
-
-# Function to print the board
 def printBoard(xState, zState):
     zero = 'X' if xState[0] else ('O' if zState[0] else 0)
     one = 'X' if xState[1] else ('O' if zState[1] else 1)
@@ -26,8 +21,6 @@ def printBoard(xState, zState):
     print(f"--|---|--")
     print(f"{six} | {seven} | {eight}")
 
-
-# Function to check if there's a winner
 def checkWin(xState, zState):
     wins = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
     for win in wins:
@@ -39,8 +32,6 @@ def checkWin(xState, zState):
             return 0
     return -1
 
-
-# Function to ask Gemini for its next move
 def ask_gemini_move(xState, zState):
     board = ['X' if xState[i] else ('O' if zState[i] else str(i)) for i in range(9)]
     board_str = (
@@ -59,25 +50,20 @@ The board is shown below (0-8 are empty positions):
 Based on the current board, what is the best number (0-8) to place your 'O'?
 Only reply with the number of the position. Do not explain.
 """
-
-    # Use Gemini 2.0 Flash-Lite model for generating the move
     model = genai.GenerativeModel("gemini-2.0-flash-lite")
     response = model.generate_content(prompt)
     move = response.text.strip()
 
-    # Ensure that Gemini provides a valid number within the range 0-8
     if move.isdigit() and int(move) in range(9):
         return int(move)
     else:
         print("Gemini returned an invalid move.")
         return None
 
-
-# Main function to play the game
 if __name__ == "__main__":
     xState = [0, 0, 0, 0, 0, 0, 0, 0, 0]
     zState = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-    turn = 1  # 1 for X and 0 for O
+    turn = 1 
     print("Welcome to Tic Tac Toe")
     while True:
         printBoard(xState, zState)
